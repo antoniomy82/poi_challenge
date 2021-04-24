@@ -30,10 +30,16 @@ class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDi
     //Binding each element with object element
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+
         holder.adapterPoisDistrictListBinding.poisVm = poisVm
+
+        //Set Tittle
+        //mDistrict.name?.let { poisVm.setTittleFromAdapter(it,mDistrict.pois?.size.toString()) }
+
         holder.adapterPoisDistrictListBinding.namePoi.text = mDistrict.pois?.get(position)?.name
-        holder.adapterPoisDistrictListBinding.likeQty.text =
-            mDistrict.pois?.get(position)?.likesCount.toString()
+
+        if( mDistrict.pois?.get(position)?.likesCount==null) holder.adapterPoisDistrictListBinding.likeQty.text = "0"
+        else holder.adapterPoisDistrictListBinding.likeQty.text = mDistrict.pois?.get(position)?.likesCount.toString()
 
         //Set image
         if (mDistrict.pois?.get(position)?.image?.url != null) {

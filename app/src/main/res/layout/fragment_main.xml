@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+        <variable
+            name="poisVM"
+            type="com.antoniomy82.poi_challenge.viewmodel.PoisViewModel" />
     </data>
 
     <LinearLayout
@@ -12,14 +14,169 @@
         android:orientation="vertical"
         tools:context=".ui.PoisDistrictListFragment">
 
+
+        <LinearLayout
+            android:id="@+id/container_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/header_id"
+                layout="@layout/header"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/district_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/normal_text_color"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/district_tittle"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="11dp"
+                android:layout_weight="0.8"
+                android:fontFamily="sans-serif"
+                android:text="@={poisVM.districtTittle}"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="normal" />
+
+            <ImageView
+                android:id="@+id/location_icon"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="14dp"
+                android:src="@drawable/location_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/pois_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginBottom="14dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@={poisVM.poisCount}"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+
+            <LinearLayout
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@color/black"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:backgroundTint="@color/material_on_background_emphasis_high_type"
+                    android:src="@mipmap/navigation_copy_3"
+                    tools:ignore="ContentDescription" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sort_by_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/sort_by_bar"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/sort_tittle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:layout_marginTop="11dp"
+                android:layout_weight="0.05"
+                android:fontFamily="sans-serif-light"
+                android:text="Ordenar:"
+                android:textAlignment="center"
+                android:textColor="@color/primary_color"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+
+            <TextView
+                android:id="@+id/sort_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:layout_weight="0.9"
+                android:fontFamily="sans-serif"
+                android:text="Popularidad"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="4dp"
+                android:backgroundTint="@color/material_on_background_emphasis_high_type"
+                android:src="@drawable/menu_horizontal"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPois"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.9"
-            android:background="@android:color/white"
             android:animateLayoutChanges="false"
-            android:animationCache="false" />
+            android:animationCache="false"
+            android:background="@android:color/white" />
+
+
+        <LinearLayout
+            android:id="@+id/map_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/gray_bottom_bar"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/map_tittle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="11dp"
+                android:layout_weight="0.1"
+                android:fontFamily="sans-serif"
+                android:text="MOSTRAR EN MAPA"
+                android:textAlignment="textStart"
+                android:textColor="@color/primary_color"
+                android:textSize="22sp"
+                android:textStyle="normal" />
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="4dp"
+                android:src="@mipmap/map_marker2_round"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
 
     </LinearLayout>
+
 </layout>
