@@ -9,5 +9,5 @@ data class District(
     var coordinates: String? = null,
     var video: Multimedia? = null,
     var audio: Multimedia? = null,
-    var pois: ArrayList<Pois>? = null
+    var pois: List<Pois>? = null
 )
