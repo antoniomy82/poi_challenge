@@ -3,12 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <data>
-        <variable
-            name="headerVM"
-            type="com.antoniomy82.poi_challenge.viewmodel.PoisViewModel" />
-    </data>
-
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
@@ -27,13 +21,14 @@
 
         <TextView
             android:id="@+id/headerTitle"
+            android:fontFamily="sans-serif"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginTop="6dp"
             android:layout_weight="0.8"
             android:textColor="@color/title_text"
             android:layout_marginStart="15dp"
-            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textSize="24sp"
             android:textStyle="bold" />
 
         <ImageView

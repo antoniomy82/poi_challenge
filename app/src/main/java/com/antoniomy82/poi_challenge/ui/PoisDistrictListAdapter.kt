@@ -30,12 +30,7 @@ class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDi
     //Binding each element with object element
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-
         holder.adapterPoisDistrictListBinding.poisVm = poisVm
-
-        //Set Tittle
-        //mDistrict.name?.let { poisVm.setTittleFromAdapter(it,mDistrict.pois?.size.toString()) }
-
         holder.adapterPoisDistrictListBinding.namePoi.text = mDistrict.pois?.get(position)?.name
 
         if( mDistrict.pois?.get(position)?.likesCount==null) holder.adapterPoisDistrictListBinding.likeQty.text = "0"
@@ -44,6 +39,11 @@ class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDi
         //Set image
         if (mDistrict.pois?.get(position)?.image?.url != null) {
             Glide.with(context).load(mDistrict.pois?.get(position)?.image?.url).into(holder.adapterPoisDistrictListBinding.imagePoi)
+        }
+
+        //on Click item
+        holder.adapterPoisDistrictListBinding.root.setOnClickListener{
+            mDistrict.pois?.get(position)?.let { it1 -> poisVm.popUpDetail(it1) }
         }
 
     }

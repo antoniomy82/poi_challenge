@@ -131,7 +131,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="4dp"
-                android:backgroundTint="@color/material_on_background_emphasis_high_type"
+                android:backgroundTint="@color/black"
                 android:src="@drawable/menu_horizontal"
                 tools:ignore="ContentDescription" />
         </LinearLayout>
