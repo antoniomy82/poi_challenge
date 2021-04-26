@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">POIs (AJ Morales) </string>
+    <string name="app_name">A.Morales.Yañez</string>
     <string name="sort_by">Ordenar:</string>
     <string name="popularity">Popularidad</string>
     <string name="show_on_map">MOSTRAR EN MAPA</string>
@@ -13,10 +13,5 @@
     <string name="sample_like_qty">3023</string>
     <string name="toast_no">Esta acción no es posible</string>
 
-    <!-- Maps API-->
-    <string name="dropped_pin">Dropped Pin</string>
-    <string name="normal_map">Mapa normal</string>
-    <string name="hybrid_map">Mapa hibrido</string>
-    <string name="satellite_map">Mapa satelite</string>
-    <string name="terrain_map">Mapa terrestre</string>
+
 </resources>

@@ -43,7 +43,7 @@ class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDi
 
         //on Click item
         holder.adapterPoisDistrictListBinding.root.setOnClickListener{
-            mDistrict.pois?.get(position)?.let { it1 -> poisVm.popUpDetail(it1) }
+            mDistrict.pois?.get(position)?.let { it1 -> poisVm.popUpDetail(it1, context) }
         }
 
     }

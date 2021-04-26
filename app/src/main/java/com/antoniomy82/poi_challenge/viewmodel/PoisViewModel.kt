@@ -5,7 +5,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
 import android.widget.TextView
@@ -33,8 +36,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
+import java.lang.String.format
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -50,6 +52,8 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     //Main fragment values
     val districtTittle = MutableLiveData<String>()
     val poisCount = MutableLiveData<String>().also { it.value = "0" }
+    val playBackProgress = MutableLiveData<Int>()
+    val remainingTime = MutableLiveData<String>()
 
     //Maps Fragment values
     private var frgMapsActivity: WeakReference<Activity>? = null
@@ -64,7 +68,14 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     private var mapView: WeakReference<MapView>? = null
     private var map: GoogleMap? = null
     private var isIntoPopUp: Boolean = false
-    private var selectedPoi:Pois ?=null
+    private var selectedPoi: Pois? = null
+    private var iconCategory: String? = null
+    private var listContext: WeakReference<Context>? = null
+    var popUpBinding: PopUpPoisDetailBinding? = null
+    var totalDuration: Long? = null
+    var mediaPlayer: MediaPlayer? = null
+    var myUri: Uri? = null
+    var launchTimer: CountDownTimer? = null
 
     @SuppressLint("SetTextI18n")
     fun setMainUI() {
@@ -145,9 +156,10 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     }
 
     //Set the POI detail in a popup
-    fun popUpDetail(mPoi: Pois?) {
+    @SuppressLint("DefaultLocale")
+    fun popUpDetail(mPoi: Pois?, mContext: Context? = null) {
 
-        val popUpBinding = frgMainActivity?.get()?.let {
+        popUpBinding = frgMainActivity?.get()?.let {
             frgMainContext?.get()?.let { it1 ->
                 PoisUtils.genericDialog(
                     it,
@@ -156,14 +168,16 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
             }
         }
 
-
+        //Media Player values
+        myUri = Uri.parse(mPoi?.audio?.url.toString()) // initialize Uri here
+        mediaPlayer = MediaPlayer.create(frgMainContext?.get(), myUri)
+        totalDuration = mediaPlayer?.duration?.toLong()
 
         popUpBinding?.titlePopup?.text = mPoi?.name
         popUpBinding?.streetPopup?.text = mPoi?.description
 
         //Set image
         if (mPoi?.image?.url != null) {
-            Log.d("galleryImages", mPoi.galleryImages?.get(0)?.url.toString())
             frgMainContext?.get()?.let {
                 popUpBinding?.photoPopup?.let { it1 ->
                     Glide.with(it).load(mPoi.image?.url).into(it1)
@@ -172,23 +186,31 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         }
 
         //Set icon image
-        if (mPoi?.category?.icon?.url != null) {
-            frgMainContext?.get()?.let {
-                popUpBinding?.iconPopup?.let { it1 ->
-                    Glide.with(it).load(mPoi.category?.icon?.url).into(it1)
-                }
+        frgMainContext?.get()?.let {
+            popUpBinding?.iconPopup?.let { it1 ->
+                Glide.with(it).load(mPoi?.category?.icon?.url.toString()).into(it1)
             }
         }
+
+        iconCategory = mPoi?.category?.icon?.url.toString()
 
         //Set likes counter
         if (mPoi?.likesCount == null) popUpBinding?.likeQty?.text = "0"
         else popUpBinding?.likeQty?.text = mPoi.likesCount.toString()
 
+        remainingTime.value =
+            (format("%tT", totalDuration?.minus(TimeZone.getDefault().rawOffset))).toString()
+        selectedPoi = mPoi
         popUpBinding?.vm = this //Update the view with databinding
         popUpBinding?.mapPopup
 
-        selectedPoi=mPoi
-        popUpBinding?.let { loadMapPopUp(it) }
+
+
+        popUpBinding?.let {
+            if (mContext != null) {
+                loadMapPopUp(it, mContext)
+            }
+        }
 
     }
 
@@ -237,17 +259,18 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         mapView?.get()?.onCreate(mapsBundle)
         mapView?.get()?.onResume()
         mapView?.get()?.getMapAsync(this)
-        isIntoPopUp=false
+        isIntoPopUp = false
     }
 
     //Map into PopUp
-    private fun loadMapPopUp(popUpBinding: PopUpPoisDetailBinding) {
+    private fun loadMapPopUp(popUpBinding: PopUpPoisDetailBinding, mContext: Context) {
 
         mapView = WeakReference(popUpBinding.mapPopup)
         mapView?.get()?.onCreate(mainBundle)
         mapView?.get()?.onResume()
         mapView?.get()?.getMapAsync(this)
-        isIntoPopUp=true
+        listContext = WeakReference(mContext)
+        isIntoPopUp = true
     }
 
     override fun onMapReady(googleMap: GoogleMap?) {
@@ -261,7 +284,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         val poisSize = retrieveDistrict?.pois?.size ?: 0
         val zoomLevel = 15f
         var mLatLng: LatLng
-
 
         if (!isIntoPopUp) {
             for (i in 0 until poisSize) {
@@ -292,27 +314,59 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
                 val mPoi: Pois? =
                     retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
 
-                isIntoPopUp=true
+                isIntoPopUp = true
                 popUpDetail(mPoi)
 
                 true
             }
 
             map?.let { setMapStyle(it) }
-        }else{
-            if(selectedPoi!=null){
 
-                val mMarker: Marker? = map?.addMarker(MarkerOptions().position(LatLng(selectedPoi?.latitude?.toDouble()!!,selectedPoi?.longitude?.toDouble()!!)))
 
-                frgMapsContext?.get()?.let {
-                    mMarker?.loadIcon(
-                        it,
-                        selectedPoi?.category?.marker?.url.toString()
+        } else {
+            if (selectedPoi != null) {
+
+
+                frgMainActivity?.get()?.let {
+                    map?.addMarker(
+                        MarkerOptions().position(
+                            LatLng(
+                                selectedPoi?.latitude?.toDouble()!!,
+                                selectedPoi?.longitude?.toDouble()!!
+                            )
+                        )
+                            ?.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                     )
                 }
 
-                map?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(selectedPoi?.latitude?.toDouble()!!,selectedPoi?.longitude?.toDouble()!!), zoomLevel))
+
+                //?.loadIcon(it,selectedPoi?.category?.marker?.url.toString())
+                //frgMainActivity?.get()?.let { mMarker?.loadIcon(it, selectedPoi?.category?.markerIcon?.url.toString()) }
+/*
+
+                listContext?.let {
+                    mMarker?.loadIcon(
+                        it,
+                        "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/99b1efe8a48cc42c55fb97b332c909f41f8bab11.png"
+                    )
+                }
+
+
+*/
+
+
+
+
+                map?.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            selectedPoi?.latitude?.toDouble()!!,
+                            selectedPoi?.longitude?.toDouble()!!
+                        ), zoomLevel
+                    )
+                )
             }
+
 
         }
     }
@@ -320,37 +374,112 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     //Util to use glide into marker
     private fun Marker.loadIcon(context: Context, url: String?) {
 
-        CoroutineScope(IO).let {
-            Glide.with(context)
-                .asBitmap()
-                .load(url)
-                .error(R.drawable.location_icon) // to show a default icon in case of any errors
-                .listener(object : RequestListener<Bitmap> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Bitmap>?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
 
-                    override fun onResourceReady(
-                        resource: Bitmap?,
-                        model: Any?,
-                        target: Target<Bitmap>?,
-                        dataSource: DataSource?,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return resource?.let {
-                            BitmapDescriptorFactory.fromBitmap(it)
-                        }?.let {
-                            setIcon(it)
-                            true
-                        } ?: false
-                    }
-                }).submit()
+        Glide.with(context)
+            .asBitmap()
+            .load(url)
+            .error(R.drawable.location_icon) // to show a default icon in case of any errors
+            .listener(object : RequestListener<Bitmap> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Bitmap>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Bitmap?,
+                    model: Any?,
+                    target: Target<Bitmap>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    return resource?.let {
+                        BitmapDescriptorFactory.fromBitmap(it)
+                    }?.let {
+                        setIcon(it)
+                        true
+                    } ?: false
+                }
+            }).submit()
+    }
+
+    fun getVM(): PoisViewModel {
+        return this
+    }
+
+    fun closePopUp(){
+        buttonStop()
+        PoisUtils.cancelDialog()
+    }
+
+    /**
+     * Media player
+     */
+
+
+    @SuppressLint("DefaultLocale")
+    fun buttonPlay() {
+        popUpBinding?.tvPass?.visibility = View.VISIBLE
+        launchTimer = mediaProgress()
+        mediaPlayer?.start()
+        popUpBinding?.playBtn?.visibility=View.GONE
+        popUpBinding?.stopBtn?.visibility=View.VISIBLE
+    }
+
+
+    fun buttonStop() {
+        popUpBinding?.tvPass?.text= R.string.default_time.toString()
+        playBackProgress.value = 0
+        popUpBinding?.playBtn?.visibility=View.VISIBLE
+        popUpBinding?.stopBtn?.visibility=View.GONE
+        mediaPlayer?.stop()
+
+        mediaPlayer = MediaPlayer.create(frgMainContext?.get(), myUri)
+        launchTimer?.cancel()
+        playBackProgress.value = 0
+        popUpBinding?.vm = getVM() //Update the view with databinding
+    }
+
+    @SuppressLint("DefaultLocale")
+    fun mediaProgress(): CountDownTimer {
+
+        var counter = 1
+        val timer = object : CountDownTimer(totalDuration!!, 1000) {
+
+
+            @SuppressLint("DefaultLocale")
+            override fun onTick(millisUntilFinished: Long) {
+                remainingTime.value = (format(
+                    "%tT",
+                    millisUntilFinished.minus(TimeZone.getDefault().rawOffset)
+                )).toString()
+                var percentageRemaining = (totalDuration?.toInt())?.div(10000)
+                counter++
+
+                if (percentageRemaining != null) {
+                    percentageRemaining *= counter * percentageRemaining
+                }
+
+                if (percentageRemaining != null) {
+                    playBackProgress.value = percentageRemaining
+
+                }
+                popUpBinding?.vm = getVM() //Update the view with databinding
+            }
+
+
+            override fun onFinish() {
+                playBackProgress.value = 0
+                popUpBinding?.tvPass?.text=R.string.default_time.toString()
+                popUpBinding?.vm = getVM() //Update the view with databinding
+            }
+
         }
+        timer.start()
+        return timer
     }
 
 }

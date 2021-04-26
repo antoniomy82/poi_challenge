@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -53,7 +52,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="@{()->PoisUtils.cancelDialog()}"
+                android:onClick="@{()->vm.closePopUp()}"
                 android:src="@drawable/ic_close"
                 tools:ignore="ContentDescription" />
 
@@ -79,42 +78,13 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="15dp"
-            android:background="@color/primary_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/tv_pass"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <TextView
-                android:id="@+id/tv_due"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp" />
-
-            <SeekBar
-                android:id="@+id/seek_bar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:saveEnabled="false" />
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/sound_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="15dp"
             android:background="@color/primary_color"
             android:orientation="horizontal">
@@ -123,35 +93,52 @@
                 android:id="@+id/playBtn"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:layout_weight="0.2"
+                android:layout_weight="0.1"
                 android:src="@drawable/ic_play"
+                android:onClick="@{()->vm.buttonPlay()}"
                 tools:ignore="ContentDescription" />
 
-            <ImageView
-                android:id="@+id/pauseBtn"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_weight="0.2"
-                android:src="@drawable/ic_pause"
-                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/stopBtn"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_gravity="center"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:layout_weight="0.2"
+                android:layout_weight="0.1"
                 android:src="@drawable/ic_stop"
+                android:visibility="gone"
+                android:onClick="@{()->vm.buttonStop()}"
                 tools:ignore="ContentDescription" />
+
+            <SeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:max="100"
+                android:progress="@={vm.playBackProgress}" />
+
+            <TextView
+                android:id="@+id/tv_pass"
+                android:layout_width="0dp"
+                android:layout_weight="0.1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginTop="15dp"
+                android:textColor="@color/black"
+                android:text="@={vm.remainingTime}" />
+
         </LinearLayout>
+
+
 
         <LinearLayout
             android:id="@+id/description_layout"

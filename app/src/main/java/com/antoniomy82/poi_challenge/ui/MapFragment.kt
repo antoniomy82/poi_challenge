@@ -43,7 +43,6 @@ class MapFragment(val poisVM: PoisViewModel) : Fragment() {
                 }
             }
         }
-
         poisVM.setMapsUI()
     }
 
