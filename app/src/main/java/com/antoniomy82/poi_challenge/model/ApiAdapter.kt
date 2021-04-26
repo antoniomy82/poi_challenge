@@ -13,6 +13,6 @@ class ApiAdapter {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        api = retrofit.create<ApiService>(ApiService::class.java)
+        api = retrofit.create(ApiService::class.java)
     }
 }

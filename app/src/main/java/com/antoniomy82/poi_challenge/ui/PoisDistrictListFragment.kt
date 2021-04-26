@@ -9,13 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.antoniomy82.poi_challenge.R
 import com.antoniomy82.poi_challenge.databinding.FragmentMainBinding
+import com.antoniomy82.poi_challenge.model.District
 import com.antoniomy82.poi_challenge.model.DistrictsRepository
 import com.antoniomy82.poi_challenge.viewmodel.PoisViewModel
 
 
-class PoisDistrictListFragment : Fragment() {
+class PoisDistrictListFragment(val mDistrict: District? = null) : Fragment() {
 
-    private var poisViewModel:PoisViewModel ?=null
+    private var poisViewModel: PoisViewModel? = null
     private lateinit var fragmentMainBinding: FragmentMainBinding
 
 
@@ -23,7 +24,8 @@ class PoisDistrictListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        fragmentMainBinding= DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
+        fragmentMainBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_main, container, false)
         return fragmentMainBinding.root
     }
 
@@ -32,17 +34,40 @@ class PoisDistrictListFragment : Fragment() {
 
         poisViewModel = ViewModelProvider(this).get(PoisViewModel::class.java)
 
-        activity?.let { context?.let { it1 -> poisViewModel?.setFragmentBinding(it, it1,view) } }
-
-        poisViewModel?.setUI()
-
-        DistrictsRepository().getDistrict1().observe(viewLifecycleOwner){ retrieveDistrict->
-            if(retrieveDistrict!=null) {
-                poisViewModel?.setRecyclerViewAdapter(retrieveDistrict)
-                poisViewModel?.setTittleFromAdapter(retrieveDistrict.name.toString(), retrieveDistrict.pois?.size.toString())
-                fragmentMainBinding.poisVM = poisViewModel //update VM content
-
+        activity?.let {
+            context?.let { it1 ->
+                poisViewModel?.setMainFragmentBinding(
+                    it,
+                    it1,
+                    view,
+                    savedInstanceState
+                )
             }
+        }
+
+        poisViewModel?.setMainUI()
+
+        if (mDistrict == null) {
+            DistrictsRepository().getDistrict1().observe(viewLifecycleOwner) { retrieveDistrict ->
+                if (retrieveDistrict != null) {
+                    poisViewModel?.retrieveDistrict = retrieveDistrict
+                    poisViewModel?.setRecyclerViewAdapter(retrieveDistrict)
+                    poisViewModel?.setTittleFromAdapter(
+                        retrieveDistrict.name.toString(),
+                        retrieveDistrict.pois?.size.toString()
+                    )
+                    fragmentMainBinding.poisVM = poisViewModel //update VM content
+
+                }
+            }
+        } else {
+            poisViewModel?.retrieveDistrict = mDistrict
+            poisViewModel?.setRecyclerViewAdapter(mDistrict)
+            poisViewModel?.setTittleFromAdapter(
+                mDistrict.name.toString(),
+                mDistrict.pois?.size.toString()
+            )
+            fragmentMainBinding.poisVM = poisViewModel
         }
     }
 

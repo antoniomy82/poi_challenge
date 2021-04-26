@@ -12,7 +12,7 @@ import com.antoniomy82.poi_challenge.viewmodel.PoisViewModel
 import com.bumptech.glide.Glide
 
 
-class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDistrict: District, val context: Context) :
+class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDistrict: District, private val context: Context) :
     RecyclerView.Adapter<PoisDistrictListAdapter.ViewHolder>() {
 
 

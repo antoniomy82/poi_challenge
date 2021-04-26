@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">POIs (AJ Morales) </string>
+    <string name="sort_by">Sort:</string>
+    <string name="popularity">Popularity</string>
+    <string name="show_on_map">SHOW ON MAP</string>
+    <string name="show_on_list">SHOW ON LIST</string>
+    <string name="sample_title">SALA LA RIVIERA</string>
+    <string name="play_text">Play</string>
+    <string name="pause_text">Pause</string>
+    <string name="stop_text">Stop</string>
+    <string name="about_this_place">About this place:</string>
+    <string name="sample_like_qty">3023</string>
+    <string name="toast_no">This action is not possible</string>
+
+    <!-- Maps API-->
+    <string name="dropped_pin">Dropped Pin</string>
+    <string name="normal_map">Normal Map</string>
+    <string name="hybrid_map">Hybrid Map</string>
+    <string name="satellite_map">Satellite Map</string>
+    <string name="terrain_map">Terrain Map</string>
 </resources>

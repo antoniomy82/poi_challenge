@@ -9,7 +9,7 @@
             name="vm"
             type="com.antoniomy82.poi_challenge.viewmodel.PoisViewModel" />
 
-        <import type="com.antoniomy82.poi_challenge.utils.PopupUtil"/>
+        <import type="com.antoniomy82.poi_challenge.utils.PoisUtils" />
     </data>
 
     <LinearLayout
@@ -30,6 +30,7 @@
                 android:layout_height="38dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
                 android:layout_marginEnd="8dp"
                 android:src="@mipmap/category_night"
                 tools:ignore="ContentDescription" />
@@ -41,7 +42,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_weight="0.8"
                 android:fontFamily="sans-serif"
-                android:text="SALA LA RIVIERA"
+                android:text="@string/sample_title"
                 android:textColor="@color/title_text"
                 android:textSize="24sp"
                 android:textStyle="normal" />
@@ -52,8 +53,8 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:onClick="@{()->PoisUtils.cancelDialog()}"
                 android:src="@drawable/ic_close"
-                android:onClick="@{()->PopupUtil.cancelDialog()}"
                 tools:ignore="ContentDescription" />
 
         </LinearLayout>
@@ -62,8 +63,8 @@
             android:id="@+id/image_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:layout_marginTop="10dp"
+            android:background="@color/white"
             android:orientation="vertical">
 
             <ImageView
@@ -118,42 +119,38 @@
             android:background="@color/primary_color"
             android:orientation="horizontal">
 
-            <Button
+            <ImageView
                 android:id="@+id/playBtn"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="88dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/material_on_primary_emphasis_high_type"
-                android:text="Play" />
+                android:layout_weight="0.2"
+                android:src="@drawable/ic_play"
+                tools:ignore="ContentDescription" />
 
-            <Button
+            <ImageView
                 android:id="@+id/pauseBtn"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="20dp"
                 android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/material_on_primary_emphasis_high_type"
-                android:enabled="false"
-                android:text="Pause" />
+                android:layout_weight="0.2"
+                android:src="@drawable/ic_pause"
+                tools:ignore="ContentDescription" />
 
-            <Button
+            <ImageView
                 android:id="@+id/stopBtn"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
                 android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/material_on_primary_emphasis_high_type"
-                android:enabled="false"
-                android:text="Stop" />
+                android:layout_weight="0.2"
+                android:src="@drawable/ic_stop"
+                tools:ignore="ContentDescription" />
         </LinearLayout>
 
         <LinearLayout
@@ -177,7 +174,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Acerca de este local:"
+                    android:text="@string/about_this_place"
                     android:textColor="@color/district_bar"
                     android:textSize="13sp"
                     android:textStyle="normal" />
@@ -191,7 +188,7 @@
                     android:layout_weight="0"
                     android:fontFamily="sans-serif-medium"
                     android:letterSpacing="0.02"
-                    android:text="3023"
+                    android:text="@string/sample_like_qty"
                     android:textColor="@color/text_likes_color"
                     android:textSize="16sp"
                     android:textStyle="bold" />
@@ -228,21 +225,24 @@
                     tools:text="Paseo Bajo de la Virgen del puerto, SN" />
 
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="15dp"
-                android:background="@color/white"
-                android:orientation="horizontal">
-
-
-
-            </LinearLayout>
         </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/map_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map_popup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
     </LinearLayout>
 </layout>

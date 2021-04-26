@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.antoniomy82.poi_challenge">
 
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -15,6 +17,11 @@
         android:theme="@style/Theme.Poi_challenge"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDKF0pORukA3ZIyTK772JsKWAxheSiGCc8" />
+
         <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
