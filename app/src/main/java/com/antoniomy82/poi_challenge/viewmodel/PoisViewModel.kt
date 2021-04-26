@@ -52,8 +52,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     //Main fragment values
     val districtTittle = MutableLiveData<String>()
     val poisCount = MutableLiveData<String>().also { it.value = "0" }
-    val playBackProgress = MutableLiveData<Int>()
-    val remainingTime = MutableLiveData<String>()
+
 
     //Maps Fragment values
     private var frgMapsActivity: WeakReference<Activity>? = null
@@ -71,6 +70,10 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     private var selectedPoi: Pois? = null
     private var iconCategory: String? = null
     private var listContext: WeakReference<Context>? = null
+
+    //Media player
+    val playBackProgress = MutableLiveData<Int>()
+    val remainingTime = MutableLiveData<String>()
     var popUpBinding: PopUpPoisDetailBinding? = null
     var totalDuration: Long? = null
     var mediaPlayer: MediaPlayer? = null
@@ -209,6 +212,8 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         popUpBinding?.let {
             if (mContext != null) {
                 loadMapPopUp(it, mContext)
+            }else{
+                frgMapsContext?.get()?.let { it1 -> loadMapPopUp(it, it1) }
             }
         }
 
@@ -314,7 +319,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
                 val mPoi: Pois? =
                     retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
 
-                isIntoPopUp = true
+                isIntoPopUp = false
                 popUpDetail(mPoi)
 
                 true
@@ -431,7 +436,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
 
     fun buttonStop() {
-        popUpBinding?.tvPass?.text= R.string.default_time.toString()
+        popUpBinding?.tvPass?.text= ""
         playBackProgress.value = 0
         popUpBinding?.playBtn?.visibility=View.VISIBLE
         popUpBinding?.stopBtn?.visibility=View.GONE
@@ -473,7 +478,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
             override fun onFinish() {
                 playBackProgress.value = 0
-                popUpBinding?.tvPass?.text=R.string.default_time.toString()
+                popUpBinding?.tvPass?.text=""
                 popUpBinding?.vm = getVM() //Update the view with databinding
             }
 
