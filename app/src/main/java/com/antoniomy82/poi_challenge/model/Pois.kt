@@ -11,7 +11,7 @@ data class Pois(
     var longitude: Float? = null,
     var category: Category? = null,
     var premium: Boolean? = null,
-    var news: ArrayList<String>? = null,
+    var news: ArrayList<News>? = null,
     var name: String? = null,
     var description: String? = null,
     var video: Multimedia? = null,

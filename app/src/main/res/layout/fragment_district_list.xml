@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".ui.PoisDistrictListFragment">
+        tools:context=".ui.districtlist.PoisDistrictListFragment">
 
 
         <LinearLayout
@@ -120,7 +120,7 @@
                 android:layout_marginTop="11dp"
                 android:layout_weight="0.9"
                 android:fontFamily="sans-serif"
-                android:text="@string/popularity"
+                android:text="@string/no_sort"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 android:textStyle="normal" />
@@ -135,6 +135,20 @@
                 android:src="@drawable/menu_horizontal"
                 tools:ignore="ContentDescription" />
         </LinearLayout>
+
+        <android.widget.ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:indeterminateTintMode="src_atop"
+            android:indeterminateTint="@color/gray_bottom_bar"
+            android:layout_marginTop="120dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="visible" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvPois"

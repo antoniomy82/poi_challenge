@@ -1,4 +1,4 @@
-package com.antoniomy82.poi_challenge.ui
+package com.antoniomy82.poi_challenge.ui.map
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import com.antoniomy82.poi_challenge.databinding.FragmentMapBinding
 import com.antoniomy82.poi_challenge.viewmodel.PoisViewModel
 
 
-class MapFragment(val poisVM: PoisViewModel) : Fragment() {
+class MapFragment(val poisVM: PoisViewModel, var cityName:String?=null) : Fragment() {
 
     private var fragmentMapBinding: FragmentMapBinding? = null
 
@@ -44,6 +44,7 @@ class MapFragment(val poisVM: PoisViewModel) : Fragment() {
             }
         }
         poisVM.setMapsUI()
+        poisVM.selectedCity= cityName.toString()
     }
 
 }

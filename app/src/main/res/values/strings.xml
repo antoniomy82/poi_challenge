@@ -2,6 +2,7 @@
     <string name="app_name">A.Morales.Yañez</string>
     <string name="sort_by">Sort:</string>
     <string name="popularity">Popularity</string>
+    <string name="no_sort">Unordered</string>
     <string name="show_on_map">SHOW ON MAP</string>
     <string name="show_on_list">SHOW ON LIST</string>
     <string name="sample_title">SALA LA RIVIERA</string>
@@ -13,6 +14,12 @@
     <string name="toast_no">This action is not possible</string>
 
     <string name="default_time" translatable="false">"00:00:00"</string>
+    <string name="district_list">District List</string>
 
+    <string name="home_title">Cities and districts</string>
+    <string name="event_tap">EVENTS</string>
+    <string name="present_tap">PRESENT</string>
+
+    <string name="accept">ACCEPT</string>
 
 </resources>

@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.antoniomy82.poi_challenge"
-        minSdkVersion 22
+        minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"

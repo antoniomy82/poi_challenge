@@ -1,13 +1,16 @@
-package com.antoniomy82.poi_challenge.ui
+package com.antoniomy82.poi_challenge.ui.districtlist
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy82.poi_challenge.R
 import com.antoniomy82.poi_challenge.databinding.AdapterPoisDistrictListBinding
 import com.antoniomy82.poi_challenge.model.District
+import com.antoniomy82.poi_challenge.ui.common.DetailFragment
+import com.antoniomy82.poi_challenge.utils.PoisUtils
 import com.antoniomy82.poi_challenge.viewmodel.PoisViewModel
 import com.bumptech.glide.Glide
 
@@ -43,7 +46,8 @@ class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDi
 
         //on Click item
         holder.adapterPoisDistrictListBinding.root.setOnClickListener{
-            mDistrict.pois?.get(position)?.let { it1 -> poisVm.popUpDetail(it1, context) }
+            poisVm.popUpLocation=0
+            PoisUtils.replaceFragment(mDistrict.pois?.get(position)?.let { it1 -> DetailFragment(it1,poisVm) }, (context as AppCompatActivity).supportFragmentManager)
         }
 
     }
