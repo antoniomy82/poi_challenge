@@ -477,20 +477,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
                     )
                 }
 
-
-                //?.loadIcon(it,selectedPoi?.category?.marker?.url.toString())
-                //frgMainActivity?.get()?.let { mMarker?.loadIcon(it, selectedPoi?.category?.markerIcon?.url.toString()) }
-/*
-
-                listContext?.let {
-                    mMarker?.loadIcon(
-                        it,
-                        "http://cityme.s3-website-eu-west-1.amazonaws.com/default/0001/02/99b1efe8a48cc42c55fb97b332c909f41f8bab11.png"
-                    )
-                }
-
-
-*/
                 map?.moveCamera(
                     CameraUpdateFactory.newLatLngZoom(
                         LatLng(
