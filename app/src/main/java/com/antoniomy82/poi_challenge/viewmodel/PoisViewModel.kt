@@ -24,7 +24,6 @@ import com.antoniomy82.poi_challenge.databinding.FragmentMapBinding
 import com.antoniomy82.poi_challenge.databinding.PopUpPoisDetailBinding
 import com.antoniomy82.poi_challenge.model.District
 import com.antoniomy82.poi_challenge.model.DistrictListMockUp
-import com.antoniomy82.poi_challenge.model.News
 import com.antoniomy82.poi_challenge.model.Pois
 import com.antoniomy82.poi_challenge.ui.common.DetailFragment
 import com.antoniomy82.poi_challenge.ui.districtlist.PoisDistrictListAdapter
@@ -32,7 +31,7 @@ import com.antoniomy82.poi_challenge.ui.districtlist.PoisDistrictListFragment
 import com.antoniomy82.poi_challenge.ui.homedistrict.HomeDistrictAdapter
 import com.antoniomy82.poi_challenge.ui.homedistrict.HomeDistrictFragment
 import com.antoniomy82.poi_challenge.ui.map.MapFragment
-import com.antoniomy82.poi_challenge.ui.tablayout.EventsAdapter
+
 import com.antoniomy82.poi_challenge.utils.PoisUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -90,9 +89,9 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     val remainingTime = MutableLiveData<String>()
     var popUpBinding: PopUpPoisDetailBinding? = null
     var totalDuration: Long? = null
-    var mediaPlayer: MediaPlayer? = null
-    var myUri: Uri? = null
-    var launchTimer: CountDownTimer? = null
+    private var mediaPlayer: MediaPlayer? = null
+    private var myUri: Uri? = null
+    private var launchTimer: CountDownTimer? = null
     var popUpLocation: Int = 0
 
 
@@ -180,7 +179,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         }
 
         if (retrieveDistrict != null) {
-            districtTittle.value = retrieveDistrict?.name?.toUpperCase(Locale.ROOT)
+            districtTittle.value = retrieveDistrict?.name?.uppercase(Locale.ROOT)
 
             if (retrieveDistrict?.pois?.size == 0) poisCount.value = "0"
             else poisCount.value = retrieveDistrict?.pois?.size.toString()
@@ -189,7 +188,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
         fragmentMapBinding?.poisVM = this //Update the view with databinding
         loadMap()
-        onMapReady(map)
+        map?.let { onMapReady(it) }
     }
 
     //Set Main fragment parameters in this VM
@@ -244,35 +243,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         fragmentDistrictListBinding?.mapLayout?.visibility = View.VISIBLE
     }
 
-
-    //Set Events List RecyclerView (tab layout)
-   fun setEventsRecyclerViewAdapter(mockNews:ArrayList<News>, context:Context, view:View, activity:Activity) {
-
-        //Events
-        val mRecycler: RecyclerView =
-            view.findViewById(R.id.rvEvents) as RecyclerView
-        val recyclerView: RecyclerView = mRecycler
-        val manager: RecyclerView.LayoutManager =
-            LinearLayoutManager(activity) //Orientation
-        recyclerView.layoutManager = manager
-        recyclerView.adapter = EventsAdapter(mockNews, context)
-    }
-
-    //Set Presents List RecyclerView (tab layout)
-    fun setPresentsRecyclerViewAdapter(mockNews:ArrayList<News>, context:Context, view:View, activity:Activity) {
-
-        val mRecycler: RecyclerView =
-            view.findViewById(R.id.rvPresent) as RecyclerView
-        val recyclerView: RecyclerView = mRecycler
-        val manager: RecyclerView.LayoutManager =
-            LinearLayoutManager(activity) //Orientation
-        recyclerView.layoutManager = manager
-        recyclerView.adapter = EventsAdapter(mockNews, context)
-    }
-
-
-
-
     //Set Home RecyclerView
     private fun setHomeRecyclerViewAdapter(
         mDistrictMock: ArrayList<DistrictListMockUp>,
@@ -288,7 +258,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     }
 
     fun setTittleFromAdapter(tittle: String, count: String) {
-        districtTittle.value = tittle.toUpperCase(Locale.ROOT)
+        districtTittle.value = tittle.uppercase(Locale.ROOT)
         poisCount.value = count
 
         Log.d("tittleBar", tittle + "count:" + count)
@@ -375,10 +345,12 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         try {
             // Customize the styling of the base map using a JSON object defined, in a raw resource file
             val success = map.setMapStyle(
-                MapStyleOptions.loadRawResourceStyle(
-                    frgMapsContext?.get(),
-                    R.raw.map_style
-                )
+                frgMapsContext?.get()?.let {
+                    MapStyleOptions.loadRawResourceStyle(
+                        it,
+                        R.raw.map_style
+                    )
+                }
             )
 
             if (!success) Log.e("__MAP", "Style parsing failed.")
@@ -408,92 +380,9 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         isIntoPopUp = true
     }
 
-    override fun onMapReady(googleMap: GoogleMap?) {
-
-        if (googleMap != null) {
-            map = googleMap
-        }
-
-        googleMap?.uiSettings?.isZoomControlsEnabled = true //Zoom in/out
-
-        val poisSize = retrieveDistrict?.pois?.size ?: 0
-        val zoomLevel = 15f
-        var mLatLng: LatLng
-
-        if (!isIntoPopUp) {
-            for (i in 0 until poisSize) {
-
-                mLatLng = LatLng(
-                    retrieveDistrict?.pois?.get(i)?.latitude!!.toDouble(),
-                    retrieveDistrict?.pois?.get(i)?.longitude!!.toDouble()
-                )
-
-
-                val mMarker: Marker? = map?.addMarker(MarkerOptions().position(mLatLng))
-
-                frgMapsContext?.get()?.let {
-                    mMarker?.loadIcon(
-                        it,
-                        retrieveDistrict?.pois?.get(i)?.category?.marker?.url.toString()
-                    )
-                }
-
-                map?.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, zoomLevel))
-            }
-
-
-            googleMap?.setOnMarkerClickListener { it ->
-
-                it.position.latitude
-
-                val mPoi: Pois? =
-                    retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
-
-                isIntoPopUp = false
-                popUpLocation = 1
-                PoisUtils.replaceFragment(
-                    mPoi?.let { it1 -> DetailFragment(it1, this) },
-                    (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager
-                )
-                true
-            }
-
-            map?.let { setMapStyle(it) }
-
-
-        } else {
-            if (selectedPoi != null) {
-
-
-                frgMainActivity?.get()?.let {
-                    map?.addMarker(
-                        MarkerOptions().position(
-                            LatLng(
-                                selectedPoi?.latitude?.toDouble()!!,
-                                selectedPoi?.longitude?.toDouble()!!
-                            )
-                        )
-                            ?.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                    )
-                }
-
-                map?.moveCamera(
-                    CameraUpdateFactory.newLatLngZoom(
-                        LatLng(
-                            selectedPoi?.latitude?.toDouble()!!,
-                            selectedPoi?.longitude?.toDouble()!!
-                        ), zoomLevel
-                    )
-                )
-            }
-
-
-        }
-    }
 
     //Util to use glide into marker
     private fun Marker.loadIcon(context: Context, url: String?) {
-
 
         Glide.with(context)
             .asBitmap()
@@ -612,6 +501,83 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         }
         timer.start()
         return timer
+    }
+
+    override fun onMapReady(googleMap: GoogleMap) {
+
+        googleMap.let { map = it }
+
+        googleMap.uiSettings.isZoomControlsEnabled = true //Zoom in/out
+
+        val poisSize = retrieveDistrict?.pois?.size ?: 0
+        val zoomLevel = 15f
+        var mLatLng: LatLng
+
+        if (!isIntoPopUp) {
+            for (i in 0 until poisSize) {
+
+                mLatLng = LatLng(
+                    retrieveDistrict?.pois?.get(i)?.latitude!!.toDouble(),
+                    retrieveDistrict?.pois?.get(i)?.longitude!!.toDouble()
+                )
+
+
+                val mMarker: Marker? = map?.addMarker(MarkerOptions().position(mLatLng))
+
+                frgMapsContext?.get()?.let {
+                    mMarker?.loadIcon(
+                        it,
+                        retrieveDistrict?.pois?.get(i)?.category?.marker?.url.toString()
+                    )
+                }
+
+                map?.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, zoomLevel))
+            }
+
+
+            googleMap.setOnMarkerClickListener {
+
+                it.position.latitude
+
+                val mPoi: Pois? =
+                    retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
+
+                isIntoPopUp = false
+                popUpLocation = 1
+                PoisUtils.replaceFragment(
+                    mPoi?.let { it1 -> DetailFragment(it1, this) },
+                    (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager
+                )
+                true
+            }
+
+            map?.let { setMapStyle(it) }
+
+
+        } else {
+            if (selectedPoi != null) {
+                frgMainActivity?.get()?.let {
+                    map?.addMarker(
+                        MarkerOptions().position(
+                            LatLng(
+                                selectedPoi?.latitude?.toDouble()!!,
+                                selectedPoi?.longitude?.toDouble()!!
+                            )
+                        )
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    )
+                }
+
+                map?.moveCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            selectedPoi?.latitude?.toDouble()!!,
+                            selectedPoi?.longitude?.toDouble()!!
+                        ), zoomLevel
+                    )
+                )
+            }
+        }
     }
 
 }

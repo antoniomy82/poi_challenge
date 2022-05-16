@@ -256,14 +256,6 @@
                             android:layout_height="140dp" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:id="@+id/frg_tabs"
-                        android:layout_width="match_parent"
-                        android:layout_height="300dp"
-                        android:orientation="horizontal"
-                        android:padding="16dp">
-
-                    </LinearLayout>
                 </LinearLayout>
 
             </ScrollView>

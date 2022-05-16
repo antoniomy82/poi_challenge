@@ -29,7 +29,7 @@ class PoisUtils {
                 fragmentTransaction.replace(layoutId, newFragment)
                 fragmentTransaction.commit()
             } catch (e: Exception) {
-                Log.e("frgmntReplaceFromLayout", e.toString())
+                Log.e("fragmentReplaceFromLayout", e.toString())
             }
 
         }

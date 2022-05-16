@@ -136,12 +136,13 @@ class PoisDistrictListFragment(
 
     private fun setObserverIntoViewModel(retrieveDistrict: District) {
 
-        if (retrieveDistrict != null) {
-            poisViewModel?.retrieveDistrict = retrieveDistrict
-            poisViewModel?.setDistrictListRecyclerViewAdapter(retrieveDistrict)
+
+        retrieveDistrict.let{
+            poisViewModel?.retrieveDistrict = it
+            poisViewModel?.setDistrictListRecyclerViewAdapter(it)
             poisViewModel?.setTittleFromAdapter(
-                retrieveDistrict.name.toString(),
-                retrieveDistrict.pois?.size.toString()
+                it.name.toString(),
+                it.pois?.size.toString()
             )
             fragmentDistrictListBinding.poisVM = poisViewModel //update VM content
 

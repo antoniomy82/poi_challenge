@@ -31,7 +31,7 @@ class HomeDistrictFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        poisViewModel = ViewModelProvider(this).get(PoisViewModel::class.java)
+        poisViewModel = ViewModelProvider(this)[PoisViewModel::class.java]
         fragmentHomeDistrictBinding?.poisVM = poisViewModel
 
         poisViewModel?.setHomeUI(view, activity, context)

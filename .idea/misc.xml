@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="app/src/main/res/drawable/ic_close.xml" value="0.3485" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/adapter_events.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/adapter_home_districts.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/adapter_pois_district_list.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/fragment_district_list.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/fragment_events.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/fragment_home_district.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/fragment_map.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/fragment_present.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/header.xml" value="0.43385416666666665" />
+        <entry key="app/src/main/res/layout/pop_up_error_warning.xml" value="0.2421875" />
+        <entry key="app/src/main/res/layout/pop_up_pois_detail.xml" value="0.2421875" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

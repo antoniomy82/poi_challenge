@@ -10,8 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.antoniomy82.poi_challenge.R
 import com.antoniomy82.poi_challenge.databinding.PopUpPoisDetailBinding
 import com.antoniomy82.poi_challenge.model.Pois
-import com.antoniomy82.poi_challenge.ui.tablayout.TabLayoutFragment
-import com.antoniomy82.poi_challenge.utils.PoisUtils
 import com.antoniomy82.poi_challenge.viewmodel.PoisViewModel
 
 
@@ -33,12 +31,11 @@ class DetailFragment(private val mPoi: Pois, private val mVm: PoisViewModel) : F
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        poisViewModel = ViewModelProvider(this).get(PoisViewModel::class.java)
+        poisViewModel = ViewModelProvider(this)[PoisViewModel::class.java]
 
         poisViewModel= mVm
         poisViewModel?.popUpBinding=popUpPoisDetailBinding
 
-        poisViewModel?.let { it2->  context?.let { PoisUtils.fragmentReplaceFromLayout(it, R.id.frg_tabs, TabLayoutFragment(it2)) }}
         popUpPoisDetailBinding?.let { poisViewModel?.popUpDetail(mPoi, context, it) }
     }
 
