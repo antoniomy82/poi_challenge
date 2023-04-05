@@ -5,24 +5,21 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion project.mCompileSdkVersion.toInteger()
 
     defaultConfig {
-        applicationId "com.antoniomy82.poi_challenge"
-        minSdkVersion 26
-        targetSdkVersion 31
+        applicationId 'com.antoniomy82.mycities'
+        minSdkVersion project.mMinSdkVersion.toInteger()
+        targetSdkVersion project.mCompileSdkVersion.toInteger()
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file('local.properties').newDataInputStream())
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -31,32 +28,15 @@ android {
         jvmTarget = '1.8'
     }
 
-    //DataBinding
-    buildFeatures{
+    buildFeatures {
         dataBinding = true
         viewBinding true
     }
+    namespace 'com.antoniomy82.mycities.app'
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.4.1'
-    implementation 'com.google.android.material:material:1.6.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.gms:play-services-maps:18.0.2'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'  //Retrofit
-    implementation 'com.google.code.gson:gson:2.9.0'  //Gson
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0' //Converter Gson
-    implementation "com.github.bumptech.glide:glide:4.13.2" //Glide
-    implementation 'com.squareup.picasso:picasso:2.71828' //Picasso
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1" //LiveData
-    implementation 'androidx.recyclerview:recyclerview:1.2.1' //RecyclerView
-    implementation 'com.google.android.gms:play-services-maps:18.0.2'  //Maps
-    implementation 'com.google.android.material:material:1.6.0'
-
+    implementation project(":data")
+    implementation project(":domain")
+    implementation project(":ui")
 }

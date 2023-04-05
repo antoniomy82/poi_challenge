@@ -1,2 +1,5 @@
+rootProject.name = "mycities"
 include ':app'
-rootProject.name = "poi_challenge"
+include ':data'
+include ':domain'
+include ':ui'

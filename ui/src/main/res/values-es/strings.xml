@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyCities</string>
+    <string name="sort_by">Ordenar:</string>
+    <string name="popularity">Popularidad</string>
+    <string name="no_sort">Sin ordenar</string>
+    <string name="show_on_map">Mostrar en mapa</string>
+    <string name="show_on_list">Mostrar en lista</string>
+    <string name="sample_title">SALA LA RIVIERA</string>
+    <string name="play_text">Play</string>
+    <string name="pause_text">Pause</string>
+    <string name="stop_text">Stop</string>
+    <string name="about_this_place">Acerca de este local:</string>
+    <string name="sample_like_qty">3023</string>
+    <string name="toast_no">Esta acción no es posible</string>
+
+    <string name="district_list">Lista Distritos</string>
+    <string name="home_title">Ciudades y Distritos</string>
+    <string name="event_tap">EVENTOS</string>
+    <string name="present_tap">ACTUALIDAD</string>
+
+    <string name="accept">ACEPTAR</string>
+    <string name="loading">Cargando…</string>
+</resources>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="poisVM"
+            type="com.antoniomy82.ui.viewmodel.PoisViewModel" />
+    </data>
+
+
+    <LinearLayout
+        android:id="@+id/container_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/header_id"
+            layout="@layout/header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+
+        <LinearLayout
+            android:id="@+id/district_title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/normal_text_color"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/district_tittle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="2sp"
+                android:layout_weight="0.8"
+                android:gravity="center_horizontal|center_vertical"
+                android:text="@={poisVM.districtTittle}"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="normal" />
+
+            <ImageView
+                android:id="@+id/location_icon"
+                android:layout_width="22sp"
+                android:layout_height="22sp"
+                android:layout_marginTop="16sp"
+                android:layout_marginEnd="4sp"
+                android:layout_marginBottom="16sp"
+                android:src="@drawable/location_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/pois_counter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15sp"
+                android:layout_marginEnd="15sp"
+                android:layout_marginBottom="16sp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@={poisVM.poisCount}"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="normal" />
+        </LinearLayout>
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.9"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+
+        <LinearLayout
+            android:id="@+id/list_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0"
+            android:background="@color/gray_bottom_bar"
+            android:orientation="horizontal"
+            android:onClick="@{()->poisVM.goToList()}">
+
+            <TextView
+                android:id="@+id/map_tittle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_weight="0.1"
+                android:fontFamily="sans-serif"
+                android:text="@string/show_on_list"
+                android:textAlignment="textStart"
+                android:textColor="@color/primary_color"
+                android:textSize="22sp"
+                android:textStyle="normal"
+                tools:ignore="NestedWeights" />
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="4dp"
+                android:src="@mipmap/menu"
+                tools:ignore="ContentDescription" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</layout>
