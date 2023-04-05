@@ -52,7 +52,8 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/basic_menu_btn"
             android:textAllCaps="false"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            tools:ignore="UnusedAttribute" />
 
     </RelativeLayout>
 </layout>
