@@ -16,7 +16,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     //Disable automatic back button
-    @Deprecated("Deprecated in Java")
+    @Deprecated("Deprecated in Java", ReplaceWith(
+        "Toast.makeText(this, R.string.toast_no, Toast.LENGTH_LONG).show()",
+        "android.widget.Toast",
+        "com.antoniomy82.mycities.ui.R",
+        "android.widget.Toast"
+    )
+    )
     override fun onBackPressed() {
         Toast.makeText(this, R.string.toast_no, Toast.LENGTH_LONG).show()
     }

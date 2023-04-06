@@ -1,6 +1,5 @@
 package com.antoniomy82.ui.viewmodel
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
@@ -43,9 +42,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
-import java.lang.String.format
 import java.lang.ref.WeakReference
-import java.util.*
 import kotlin.properties.Delegates
 import kotlin.system.exitProcess
 
@@ -85,7 +82,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     var selectedCity: String = ""
     private lateinit var timeValue: String
 
-
     //Media player
     val remainingTime = MutableLiveData<String>()
     var popUpBinding: PopUpPoisDetailBinding? = null
@@ -102,17 +98,17 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         val headerTitle = view.findViewById<View>(R.id.headerTitle) as TextView
         headerTitle.text = context?.getString(R.string.home_title)
 
-        //Back arrow
-        view.findViewById<View>(R.id.headerBack)?.setOnClickListener {
-            activity?.finish()
-            exitProcess(0)
+        view.findViewById<View>(R.id.headerBack).apply {
+            setBackgroundResource(R.drawable.baseline_close_24)
+
+            setOnClickListener {
+                activity?.finish()
+                exitProcess(0)
+            }
         }
 
-        //Set counter
-        poisCount.value = getCities().size.toString()
-
-        //Start recyclerView
-        context?.let { setHomeRecyclerViewAdapter(getCities(), it, view) }
+        poisCount.value = getCities().size.toString()  //Set counter
+        context?.let { setHomeRecyclerViewAdapter(getCities(), it, view) }  //Start recyclerView
     }
 
 
@@ -200,7 +196,8 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
         val mRecycler: RecyclerView = frgMainView?.get()?.findViewById(R.id.rvPois) as RecyclerView
         val recyclerView: RecyclerView = mRecycler
-        val manager: RecyclerView.LayoutManager = LinearLayoutManager(frgMainActivity?.get()) //Orientation
+        val manager: RecyclerView.LayoutManager =
+            LinearLayoutManager(frgMainActivity?.get()) //Orientation
         recyclerView.layoutManager = manager
         recyclerView.adapter = frgMainContext?.get()?.let {
             PoisDistrictListAdapter(
@@ -248,16 +245,13 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     }
 
     //Set the POI detail in a popup
-    @SuppressLint("DefaultLocale")
     fun popUpDetail(mPoi: Pois?, mContext: Context? = null, popUpBinding: PopUpPoisDetailBinding) {
 
         //Media Player values
         myUri = Uri.parse(mPoi?.audio?.url.toString()) // initialize Uri here
         mediaPlayer = MediaPlayer.create(frgMainContext?.get(), myUri)
         totalDuration = mediaPlayer?.duration?.toLong() ?: 0
-
-        timeValue = (format("%tT", totalDuration.minus(TimeZone.getDefault().rawOffset))).toString()
-
+        timeValue = getTimeResult(totalDuration)
         remainingTime.value = timeValue
 
         if (timeValue != "null") popUpBinding.soundLayout.visibility = View.VISIBLE
@@ -412,22 +406,19 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
         val timer = object : CountDownTimer(totalDuration, 1000) {
 
-            @SuppressLint("DefaultLocale")
             override fun onTick(millisUntilFinished: Long) {
-                remainingTime.value = (format(
-                    "%tT",
-                    millisUntilFinished.minus(TimeZone.getDefault().rawOffset)
-                )).toString()
+                remainingTime.value = getTimeResult(millisUntilFinished)
                 popUpBinding?.vm = getVM() //Update the view with dataBinding
             }
 
-            override fun onFinish() {
-                buttonStop()
-            }
+            override fun onFinish() =buttonStop()
         }
         timer.start()
         return timer
     }
+
+    fun getTimeResult(millisUntilFinished: Long)  = "${(millisUntilFinished / 1000 / 60).toString().padStart(2, '0')}:" +
+    "${(millisUntilFinished / 1000 % 60).toString().padStart(2, '0')} "
 
     /**
      * Map
@@ -501,7 +492,8 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
                 googleMap.setOnMarkerClickListener {
                     it.position.latitude
-                    val mPoi: Pois? = retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
+                    val mPoi: Pois? =
+                        retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
                     isIntoPopUp = false
                     popUpLocation = 1
                     replaceFragment(

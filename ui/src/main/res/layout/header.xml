@@ -12,14 +12,13 @@
 
         <ImageView
             android:id="@+id/headerBack"
-            android:layout_width="32sp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16sp"
-            android:src="@drawable/back_ios_new_24"
+            android:background="@drawable/back_ios_new_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/title_text"
             tools:ignore="ContentDescription" />
 
         <TextView
@@ -35,7 +34,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:targetApi="jelly_bean" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
