@@ -87,7 +87,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
 
     //Media player
-    // val playBackProgress = MutableLiveData<Int>()
     val remainingTime = MutableLiveData<String>()
     var popUpBinding: PopUpPoisDetailBinding? = null
     var totalDuration by Delegates.notNull<Long>()
@@ -199,11 +198,9 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     //Set District List RecyclerView
     fun setDistrictListRecyclerViewAdapter(mDistrict: District) {
 
-        val mRecycler: RecyclerView =
-            frgMainView?.get()?.findViewById(R.id.rvPois) as RecyclerView
+        val mRecycler: RecyclerView = frgMainView?.get()?.findViewById(R.id.rvPois) as RecyclerView
         val recyclerView: RecyclerView = mRecycler
-        val manager: RecyclerView.LayoutManager =
-            LinearLayoutManager(frgMainActivity?.get()) //Orientation
+        val manager: RecyclerView.LayoutManager = LinearLayoutManager(frgMainActivity?.get()) //Orientation
         recyclerView.layoutManager = manager
         recyclerView.adapter = frgMainContext?.get()?.let {
             PoisDistrictListAdapter(

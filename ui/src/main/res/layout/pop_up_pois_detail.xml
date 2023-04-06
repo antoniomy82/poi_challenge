@@ -53,8 +53,8 @@
                         app:tint="@color/title_text"
                         android:onClick="@{()->vm.closePopUp()}"
                         android:src="@drawable/back_ios_new_24"
-                        tools:targetApi="donut"
-                        tools:ignore="ContentDescription"/>
+                        tools:ignore="ContentDescription"
+                        tools:targetApi="donut" />
 
                     <TextView
                         android:id="@+id/title_popup"

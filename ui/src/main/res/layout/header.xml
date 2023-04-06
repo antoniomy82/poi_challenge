@@ -28,7 +28,7 @@
             android:layout_height="match_parent"
             android:fontFamily="sans-serif"
             android:gravity="center"
-            android:text="PRUEBAS"
+            android:text="@string/test_header"
             android:textColor="@color/title_text"
             android:textSize="24sp"
             android:textStyle="bold"

@@ -1,26 +1,18 @@
 <resources>
     <string name="app_name">MyCities"</string>
-    <string name="sort_by">Sort:</string>
-    <string name="popularity">Popularity</string>
-    <string name="no_sort">Unordered</string>
     <string name="show_on_map">Show on map</string>
     <string name="show_on_list">Show on list</string>
     <string name="sample_title">SALA LA RIVIERA</string>
-    <string name="play_text">Play</string>
-    <string name="pause_text">Pause</string>
-    <string name="stop_text">Stop</string>
     <string name="about_this_place">About this place:</string>
     <string name="sample_like_qty">3023</string>
     <string name="toast_no">This action is not possible</string>
 
-    <string name="default_time" translatable="false">"00:00"</string>
     <string name="district_list">District List</string>
 
     <string name="home_title">Cities &amp; Districts</string>
-    <string name="event_tap">EVENTS</string>
-    <string name="present_tap">PRESENT</string>
 
     <string name="accept">ACCEPT</string>
     <string name="loading">Loading…</string>
+    <string name="test_header">TEST HEADER</string>
 
 </resources>

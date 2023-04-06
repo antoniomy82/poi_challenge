@@ -10,7 +10,7 @@ import com.antoniomy82.mycities.ui.R
 import com.antoniomy82.mycities.ui.databinding.FragmentMapBinding
 import com.antoniomy82.ui.viewmodel.PoisViewModel
 
-class MapFragment(val poisVM: PoisViewModel, var cityName: String? = null) : Fragment() {
+class MapFragment(val poisVM: PoisViewModel, private var cityName: String? = null) : Fragment() {
 
     private var fragmentMapBinding: FragmentMapBinding? = null
 

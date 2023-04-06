@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
@@ -28,12 +27,13 @@ class HomeDistrictAdapter(
             parent, false)
     )
 
-    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.adapterHomeDistrictsBinding.apply {
             cityName.text = districtList[position].cityName
             nameDistrict.text = districtList[position].district
-            imagePoi.background = districtList[position].flag?.let { ContextCompat.getDrawable(context, it) }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                imagePoi.background = districtList[position].flag?.let { ContextCompat.getDrawable(context, it) }
+            }
 
             root.setOnClickListener {
                 replaceFragment(districtList[position].urlId?.let { it1 ->

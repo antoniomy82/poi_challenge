@@ -16,7 +16,7 @@ import com.antoniomy82.ui.viewmodel.PoisViewModel
 class DetailFragment(private val mPoi: Pois, private val mVm: PoisViewModel) : Fragment() {
 
     private var poisViewModel: PoisViewModel? = null
-    var popUpPoisDetailBinding: PopUpPoisDetailBinding?=null
+    private var popUpPoisDetailBinding: PopUpPoisDetailBinding?=null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

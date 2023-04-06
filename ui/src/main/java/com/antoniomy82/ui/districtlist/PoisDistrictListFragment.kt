@@ -1,25 +1,23 @@
 package com.antoniomy82.ui.districtlist
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.antoniomy82.data.DistrictsRepository
 import com.antoniomy82.data.model.District
 import com.antoniomy82.mycities.ui.R
 import com.antoniomy82.mycities.ui.databinding.FragmentDistrictListBinding
-import com.antoniomy82.data.DistrictsRepository
 import com.antoniomy82.ui.viewmodel.PoisViewModel
 
 
 class PoisDistrictListFragment(
     private val mDistrict: District? = null,
-    var cityName: String? = null,
+    private var cityName: String? = null,
     private val urlID: Int
 ) : Fragment() {
 
@@ -36,7 +34,6 @@ class PoisDistrictListFragment(
         return fragmentDistrictListBinding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.GINGERBREAD)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -81,7 +78,6 @@ class PoisDistrictListFragment(
     }
 
 
-    @RequiresApi(Build.VERSION_CODES.GINGERBREAD)
     private fun setObserverIntoViewModel(retrieveDistrict: District) {
 
         retrieveDistrict.let {

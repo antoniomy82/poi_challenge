@@ -15,7 +15,7 @@ import com.antoniomy82.ui.viewmodel.PoisViewModel
 class HomeDistrictFragment : Fragment() {
 
     private var poisViewModel: PoisViewModel? = null
-    var fragmentHomeDistrictBinding: FragmentHomeDistrictBinding? = null
+    private var fragmentHomeDistrictBinding: FragmentHomeDistrictBinding? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         fragmentHomeDistrictBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home_district, container, false)
