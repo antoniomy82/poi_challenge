@@ -14,16 +14,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy82.data.model.District
 import com.antoniomy82.data.model.Pois
 import com.antoniomy82.mycities.ui.R
-import com.antoniomy82.mycities.ui.databinding.FragmentDistrictListBinding
 import com.antoniomy82.mycities.ui.databinding.FragmentMapBinding
 import com.antoniomy82.mycities.ui.databinding.PopUpPoisDetailBinding
 import com.antoniomy82.ui.detail.DetailFragment
-import com.antoniomy82.ui.districtlist.PoisDistrictListAdapter
 import com.antoniomy82.ui.districtlist.PoisDistrictListFragment
 import com.antoniomy82.ui.homedistrict.HomeDistrictFragment
 import com.antoniomy82.ui.map.MapFragment
@@ -46,10 +42,9 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
     //Main Fragment values
     private var frgMainActivity: WeakReference<Activity>? = null
-    private var frgMainContext: WeakReference<Context>? = null
-    private var frgMainView: WeakReference<View>? = null
+    lateinit var frgMainContext: Context
+
     private var mainBundle: Bundle? = null
-    private var fragmentDistrictListBinding: FragmentDistrictListBinding? = null
     private var position: Int? = 0
 
 
@@ -87,24 +82,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     var popUpLocation: Int = 0
 
 
-    fun setPoisListUI() {
-
-        //Top bar title
-        val headerTitle = frgMainView?.get()?.findViewById<View>(R.id.headerTitle) as TextView
-        headerTitle.text = selectedCity
-
-        //Back arrow
-        frgMainView?.get()?.findViewById<View>(R.id.headerBack)?.setOnClickListener {
-            replaceFragment(
-                HomeDistrictFragment(),
-                (frgMainContext?.get() as AppCompatActivity).supportFragmentManager
-            )
-        }
-
-        fragmentDistrictListBinding?.progressBar?.visibility = View.VISIBLE
-        fragmentDistrictListBinding?.mapLayout?.visibility = View.GONE
-
-    }
 
 
     fun setMapsUI() {
@@ -134,23 +111,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         map?.let { onMapReady(it) }
     }
 
-    //Set Main fragment parameters in this VM
-    fun setDistrictListFragmentBinding(
-        frgActivity: Activity,
-        frgContext: Context,
-        frgView: View,
-        mainBundle: Bundle?,
-        fragmentDistrictListBinding: FragmentDistrictListBinding,
-        position: Int
-    ) {
-        this.frgMainActivity = WeakReference(frgActivity)
-        this.frgMainContext = WeakReference(frgContext)
-        this.frgMainView = WeakReference(frgView)
-        this.mainBundle = mainBundle
-        this.fragmentDistrictListBinding = fragmentDistrictListBinding
-        this.position = position
-    }
-
     //Set Maps fragment parameters in this VM
     fun setMapsFragmentBinding(
         frgActivity: Activity,
@@ -166,53 +126,12 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         this.mapsBundle = mapsBundle
     }
 
-    //Set District List RecyclerView
-    fun setDistrictListRecyclerViewAdapter(mDistrict: District) {
-
-        val mRecycler: RecyclerView = frgMainView?.get()?.findViewById(R.id.rvPois) as RecyclerView
-        val recyclerView: RecyclerView = mRecycler
-        val manager: RecyclerView.LayoutManager =
-            LinearLayoutManager(frgMainActivity?.get()) //Orientation
-        recyclerView.layoutManager = manager
-        recyclerView.adapter = frgMainContext?.get()?.let {
-            PoisDistrictListAdapter(
-                this, mDistrict,
-                it
-            )
-        }
-
-        fragmentDistrictListBinding?.progressBar?.visibility = View.GONE
-        fragmentDistrictListBinding?.mapLayout?.visibility = View.VISIBLE
-    }
-
-
-
-    fun setTittleFromAdapter(tittle: String, count: String) {
-        when (count) {
-            "null" -> {
-                districtTittle.value =
-                    fragmentDistrictListBinding?.root?.context?.getString(R.string.loading)
-                poisCount.value = ""
-                fragmentDistrictListBinding?.progressBar?.visibility = View.VISIBLE
-                fragmentDistrictListBinding?.mapLayout?.visibility = View.GONE
-                fragmentDistrictListBinding?.rvPois?.visibility = View.GONE
-            }
-            else -> {
-                districtTittle.value = tittle.uppercase()
-                poisCount.value = count
-                fragmentDistrictListBinding?.progressBar?.visibility = View.GONE
-                fragmentDistrictListBinding?.mapLayout?.visibility = View.VISIBLE
-                fragmentDistrictListBinding?.rvPois?.visibility = View.VISIBLE
-            }
-        }
-    }
-
     //Set the POI detail in a popup
     fun popUpDetail(mPoi: Pois?, mContext: Context? = null, popUpBinding: PopUpPoisDetailBinding) {
 
         //Media Player values
         myUri = Uri.parse(mPoi?.audio?.url.toString()) // initialize Uri here
-        mediaPlayer = MediaPlayer.create(frgMainContext?.get(), myUri)
+        mediaPlayer = MediaPlayer.create(frgMainContext, myUri)
         totalDuration = mediaPlayer?.duration?.toLong() ?: 0
         timeValue = getTimeResult(totalDuration)
         remainingTime.value = timeValue
@@ -224,7 +143,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
         //Set image
         if (mPoi?.image?.url != null) {
-            frgMainContext?.get()?.let {
+            frgMainContext.let {
                 popUpBinding.photoPopup.let { it1 ->
                     Glide.with(it).load(mPoi.image?.url).into(it1)
                 }
@@ -232,7 +151,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         }
 
         //Set icon image
-        frgMainContext?.get()?.let {
+        frgMainContext.let {
             popUpBinding.iconPopup.let { it1 ->
                 Glide.with(it).load(mPoi?.category?.icon?.url.toString()).into(it1)
             }
@@ -267,7 +186,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     fun goToMap() {
         replaceFragment(
             MapFragment(this, selectedCity),
-            (frgMainContext?.get() as AppCompatActivity).supportFragmentManager
+            (frgMainContext as AppCompatActivity).supportFragmentManager
         )
 
     }
@@ -276,7 +195,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     fun goToList() {
         replaceFragment(
             position?.let { PoisDistrictListFragment(retrieveDistrict, selectedCity, it) },
-            (frgMainContext?.get() as AppCompatActivity).supportFragmentManager
+            (frgMainContext as AppCompatActivity).supportFragmentManager
         )
     }
 
@@ -331,7 +250,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
                     retrieveDistrict, selectedCity,
                     it
                 )
-            }, (frgMainContext?.get() as AppCompatActivity).supportFragmentManager)
+            }, (frgMainContext as AppCompatActivity).supportFragmentManager)
 
             1 -> replaceFragment(
                 MapFragment(this, selectedCity),
@@ -360,7 +279,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         popUpBinding?.stopBtn?.visibility = View.GONE
         mediaPlayer?.stop()
 
-        mediaPlayer = MediaPlayer.create(frgMainContext?.get(), myUri)
+        mediaPlayer = MediaPlayer.create(frgMainContext, myUri)
         launchTimer?.cancel()
         popUpBinding?.vm = getVM() //Update the view with dataBinding
     }

@@ -23,8 +23,7 @@ class DetailFragment(private val mPoi: Pois, private val mVm: PoisViewModel) : F
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        popUpPoisDetailBinding =
-            DataBindingUtil.inflate(inflater, R.layout.pop_up_pois_detail, container, false)
+        popUpPoisDetailBinding = DataBindingUtil.inflate(inflater, R.layout.pop_up_pois_detail, container, false)
 
         return popUpPoisDetailBinding?.root
     }

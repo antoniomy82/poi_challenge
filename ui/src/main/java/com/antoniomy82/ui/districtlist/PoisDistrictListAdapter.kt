@@ -1,10 +1,9 @@
 package com.antoniomy82.ui.districtlist
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.antoniomy82.data.model.District
 import com.antoniomy82.mycities.ui.R
@@ -16,7 +15,7 @@ import com.antoniomy82.ui.replaceFragment
 import com.antoniomy82.ui.viewmodel.PoisViewModel
 import com.bumptech.glide.Glide
 
-class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDistrict: District, private val context: Context) :
+class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDistrict: District, private val fm: FragmentManager) :
     RecyclerView.Adapter<PoisDistrictListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
@@ -39,13 +38,13 @@ class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDi
 
         holder.adapterPoisDistrictListBinding.root.setOnClickListener {
             poisVm.popUpLocation = 0
+
             replaceFragment(mDistrict.pois?.get(position)?.let { it1 ->
-                DetailFragment(it1, poisVm)
-            }, (context as AppCompatActivity).supportFragmentManager)
+                DetailFragment(it1, poisVm) }, fm )
         }
 
         //Set image
-        if (mDistrict.pois?.get(position)?.image?.url != null) Glide.with(context).load(mDistrict.pois?.get(position)?.image?.url).into(holder.adapterPoisDistrictListBinding.imagePoi)
+        if (mDistrict.pois?.get(position)?.image?.url != null) Glide.with(holder.itemView).load(mDistrict.pois?.get(position)?.image?.url).into(holder.adapterPoisDistrictListBinding.imagePoi)
 
     }
 
