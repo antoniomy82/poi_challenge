@@ -14,9 +14,8 @@ import com.antoniomy82.mycities.ui.databinding.AdapterHomeDistrictsBinding
 import com.antoniomy82.ui.districtlist.PoisDistrictListFragment
 import com.antoniomy82.ui.replaceFragment
 
-
 class HomeDistrictAdapter(
-    private val districtList: ArrayList<CitiesListHome>,
+    private val districtList: List<CitiesListHome>,
     private val context: Context
 ) : RecyclerView.Adapter<HomeDistrictAdapter.ViewHolder>() {
 
@@ -43,9 +42,6 @@ class HomeDistrictAdapter(
         }
     }
 
-
     override fun getItemCount() = districtList.size
-
     class ViewHolder(val adapterHomeDistrictsBinding: AdapterHomeDistrictsBinding) : RecyclerView.ViewHolder(adapterHomeDistrictsBinding.root)
-
 }

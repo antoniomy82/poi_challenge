@@ -12,13 +12,10 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.antoniomy82.data.getCities
-import com.antoniomy82.data.model.CitiesListHome
 import com.antoniomy82.data.model.District
 import com.antoniomy82.data.model.Pois
 import com.antoniomy82.mycities.ui.R
@@ -28,7 +25,6 @@ import com.antoniomy82.mycities.ui.databinding.PopUpPoisDetailBinding
 import com.antoniomy82.ui.detail.DetailFragment
 import com.antoniomy82.ui.districtlist.PoisDistrictListAdapter
 import com.antoniomy82.ui.districtlist.PoisDistrictListFragment
-import com.antoniomy82.ui.homedistrict.HomeDistrictAdapter
 import com.antoniomy82.ui.homedistrict.HomeDistrictFragment
 import com.antoniomy82.ui.map.MapFragment
 import com.antoniomy82.ui.replaceFragment
@@ -44,7 +40,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
 import java.lang.ref.WeakReference
 import kotlin.properties.Delegates
-import kotlin.system.exitProcess
 
 
 class PoisViewModel : ViewModel(), OnMapReadyCallback {
@@ -90,26 +85,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     private var myUri: Uri? = null
     private var launchTimer: CountDownTimer? = null
     var popUpLocation: Int = 0
-
-
-    fun setHomeUI(view: View, activity: FragmentActivity?, context: Context?) {
-
-        //Top bar title
-        val headerTitle = view.findViewById<View>(R.id.headerTitle) as TextView
-        headerTitle.text = context?.getString(R.string.home_title)
-
-        view.findViewById<View>(R.id.headerBack).apply {
-            setBackgroundResource(R.drawable.baseline_close_24)
-
-            setOnClickListener {
-                activity?.finish()
-                exitProcess(0)
-            }
-        }
-
-        poisCount.value = getCities().size.toString()  //Set counter
-        context?.let { setHomeRecyclerViewAdapter(getCities(), it, view) }  //Start recyclerView
-    }
 
 
     fun setPoisListUI() {
@@ -210,19 +185,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         fragmentDistrictListBinding?.mapLayout?.visibility = View.VISIBLE
     }
 
-    //Set Home RecyclerView
-    private fun setHomeRecyclerViewAdapter(
-        mDistrictMock: ArrayList<CitiesListHome>,
-        context: Context,
-        view: View
-    ) {
 
-        val mRecycler: RecyclerView = view.findViewById(R.id.rvHome) as RecyclerView
-        val recyclerView: RecyclerView = mRecycler
-        val manager: RecyclerView.LayoutManager = LinearLayoutManager(context) //Orientation
-        recyclerView.layoutManager = manager
-        recyclerView.adapter = HomeDistrictAdapter(mDistrictMock, context)
-    }
 
     fun setTittleFromAdapter(tittle: String, count: String) {
         when (count) {
@@ -533,5 +496,3 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     }
 
 }
-
-
