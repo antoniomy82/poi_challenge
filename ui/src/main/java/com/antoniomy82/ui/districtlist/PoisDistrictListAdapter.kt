@@ -38,7 +38,6 @@ class PoisDistrictListAdapter(private val poisVm: PoisViewModel, private val mDi
 
         holder.adapterPoisDistrictListBinding.root.setOnClickListener {
             poisVm.popUpLocation = 0
-
             replaceFragment(mDistrict.pois?.get(position)?.let { it1 ->
                 DetailFragment(it1, poisVm) }, fm )
         }

@@ -34,7 +34,8 @@ class PoisDistrictListFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        fragmentDistrictListBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_district_list, container, false)
+        fragmentDistrictListBinding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_district_list, container, false)
         return fragmentDistrictListBinding.root
     }
 
@@ -73,6 +74,7 @@ class PoisDistrictListFragment(
         //Top bar title
         val headerTitle = view?.findViewById<View>(R.id.headerTitle) as TextView
         headerTitle.text = cityName
+        poisViewModel?.selectedCity = cityName.toString()
 
         //Back arrow
         view?.findViewById<View>(R.id.headerBack)?.setOnClickListener {
@@ -86,12 +88,12 @@ class PoisDistrictListFragment(
         retrieveDistrict.let {
             poisViewModel?.retrieveDistrict = it
             setDistrictListRecyclerViewAdapter(it)
-           if(it.name!=null) {
-               setTittleFromAdapter(
-                   it.name.toString(),
-                   it.pois?.size.toString()
-               )
-           }
+            if (it.name != null) {
+                setTittleFromAdapter(
+                    it.name.toString(),
+                    it.pois?.size.toString()
+                )
+            }
             fragmentDistrictListBinding.poisVM = poisViewModel //update VM content
         }
     }
@@ -111,30 +113,35 @@ class PoisDistrictListFragment(
     }
 
 
-    private fun setTittleFromAdapter(tittle: String? = null, count: String? = null, isEmpty: Boolean = false) {
+    private fun setTittleFromAdapter(tittle: String ="", count: String="", isEmpty: Boolean = false) {
         when (isEmpty) {
-            true -> {
-                poisViewModel?.apply {
-                    districtTittle.value = fragmentDistrictListBinding.root.context?.getString(R.string.loading)
-                    poisCount.value = ""
-                }
-                fragmentDistrictListBinding.apply {
-                    progressBar.visibility = View.VISIBLE
-                    mapLayout.visibility = View.GONE
-                    rvPois.visibility = View.GONE
-                }
-            }
-            false -> {
-                poisViewModel?.apply {
-                    districtTittle.value = tittle?.uppercase()
-                    poisCount.value = count
-                }
-                fragmentDistrictListBinding.apply {
-                    progressBar.visibility = View.GONE
-                    mapLayout.visibility = View.VISIBLE
-                    rvPois.visibility = View.VISIBLE
-                }
-            }
+            true -> showLoading()
+            false -> hideLoading(tittle, count)
+        }
+    }
+
+
+    private fun showLoading() {
+        poisViewModel?.apply {
+            districtTittle.value = context?.getString(R.string.loading)
+            poisCount.value = ""
+        }
+        fragmentDistrictListBinding.apply {
+            progressBar.visibility = View.VISIBLE
+            mapLayout.visibility = View.GONE
+            rvPois.visibility = View.GONE
+        }
+    }
+
+    private fun hideLoading(tittle: String, count: String) {
+        poisViewModel?.apply {
+            districtTittle.value = tittle.uppercase()
+            poisCount.value = count
+        }
+        fragmentDistrictListBinding.apply {
+            progressBar.visibility = View.GONE
+            mapLayout.visibility = View.VISIBLE
+            rvPois.visibility = View.VISIBLE
         }
     }
 }

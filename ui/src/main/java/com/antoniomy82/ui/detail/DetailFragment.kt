@@ -18,13 +18,8 @@ class DetailFragment(private val mPoi: Pois, private val mVm: PoisViewModel) : F
     private var poisViewModel: PoisViewModel? = null
     private var popUpPoisDetailBinding: PopUpPoisDetailBinding?=null
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         popUpPoisDetailBinding = DataBindingUtil.inflate(inflater, R.layout.pop_up_pois_detail, container, false)
-
         return popUpPoisDetailBinding?.root
     }
 

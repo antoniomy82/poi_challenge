@@ -21,8 +21,10 @@ import com.antoniomy82.mycities.ui.databinding.FragmentMapBinding
 import com.antoniomy82.mycities.ui.databinding.PopUpPoisDetailBinding
 import com.antoniomy82.ui.detail.DetailFragment
 import com.antoniomy82.ui.districtlist.PoisDistrictListFragment
+import com.antoniomy82.ui.getTimeResult
 import com.antoniomy82.ui.homedistrict.HomeDistrictFragment
 import com.antoniomy82.ui.map.MapFragment
+import com.antoniomy82.ui.mediaProgress
 import com.antoniomy82.ui.replaceFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -41,17 +43,14 @@ import kotlin.properties.Delegates
 class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
     //Main Fragment values
-    private var frgMainActivity: WeakReference<Activity>? = null
     lateinit var frgMainContext: Context
 
     private var mainBundle: Bundle? = null
     private var position: Int? = 0
 
-
     //Main fragment values
     val districtTittle = MutableLiveData<String>()
     val poisCount = MutableLiveData<String>().also { it.value = "0" }
-
 
     //Maps Fragment values
     private var frgMapsActivity: WeakReference<Activity>? = null
@@ -59,7 +58,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     private var frgMapsView: WeakReference<View>? = null
     private var fragmentMapBinding: FragmentMapBinding? = null
     private var mapsBundle: Bundle? = null
-
 
     //Global values
     var retrieveDistrict: District? = null
@@ -82,20 +80,15 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     var popUpLocation: Int = 0
 
 
-
-
     fun setMapsUI() {
-
         //Top bar title
         val headerTitle = frgMapsView?.get()?.findViewById<View>(R.id.headerTitle) as TextView
         headerTitle.text = selectedCity
 
         //Back arrow
         frgMapsView?.get()?.findViewById<View>(R.id.headerBack)?.setOnClickListener {
-            replaceFragment(
-                HomeDistrictFragment(),
-                (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager
-            )
+            //TODO : Cities Navigator
+           goToHome()
         }
 
         if (retrieveDistrict != null) {
@@ -163,10 +156,8 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         if (mPoi?.likesCount == null) popUpBinding.likeQty.text = "0"
         else popUpBinding.likeQty.text = mPoi.likesCount.toString()
 
-
         selectedPoi = mPoi
         popUpBinding.vm = this //Update the view with dataBinding
-
 
         popUpBinding.let {
             if (mContext != null) {
@@ -175,28 +166,24 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
                 frgMapsContext?.get()?.let { it1 -> loadMapPopUp(it, it1) }
             }
         }
-
     }
 
-    /**
-     * Maps functions block
-     */
+    //TODO : Cities Navigator
+    private fun goToHome() =  replaceFragment(HomeDistrictFragment(), (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
+    fun goToMap() = replaceFragment(MapFragment(this, selectedCity), (frgMainContext as AppCompatActivity).supportFragmentManager)
 
-    //Load Map fragment
-    fun goToMap() {
-        replaceFragment(
-            MapFragment(this, selectedCity),
-            (frgMainContext as AppCompatActivity).supportFragmentManager
-        )
+    fun goToList() = replaceFragment(position?.let { PoisDistrictListFragment(retrieveDistrict, selectedCity, it) }, (frgMainContext as AppCompatActivity).supportFragmentManager)
 
-    }
+    private fun goToDetail(mPoi: Pois?) = replaceFragment(mPoi?.let { it1 -> DetailFragment(it1, this) }, (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
 
-    //Load Map fragment
-    fun goToList() {
-        replaceFragment(
-            position?.let { PoisDistrictListFragment(retrieveDistrict, selectedCity, it) },
-            (frgMainContext as AppCompatActivity).supportFragmentManager
-        )
+    fun closePopUp() {
+        when (popUpLocation) {
+            //TODO : Cities Navigator
+            0 -> replaceFragment(position?.let { PoisDistrictListFragment(retrieveDistrict, selectedCity, it) }, (frgMainContext as AppCompatActivity).supportFragmentManager)
+
+            1 -> replaceFragment(MapFragment(this, selectedCity), (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager)
+        }
+        buttonStop()
     }
 
 
@@ -205,13 +192,8 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
         try {
             // Customize the styling of the base map using a JSON object defined, in a raw resource file
             val success = map.setMapStyle(
-                frgMapsContext?.get()?.let {
-                    MapStyleOptions.loadRawResourceStyle(
-                        it,
-                        R.raw.map_style
-                    )
-                }
-            )
+                frgMapsContext?.get()
+                    ?.let { MapStyleOptions.loadRawResourceStyle(it, R.raw.map_style) })
 
             if (!success) Log.e("__MAP", "Style parsing failed.")
 
@@ -243,64 +225,31 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     fun getVM(): PoisViewModel = this
 
 
-    fun closePopUp() {
-        when (popUpLocation) {
-            0 -> replaceFragment(position?.let {
-                PoisDistrictListFragment(
-                    retrieveDistrict, selectedCity,
-                    it
-                )
-            }, (frgMainContext as AppCompatActivity).supportFragmentManager)
-
-            1 -> replaceFragment(
-                MapFragment(this, selectedCity),
-                (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager
-            )
-        }
-        buttonStop()
-    }
-
-    /**
-     * Media player
-     */
+    //Media player
 
     fun buttonPlay() {
-        popUpBinding?.tvPass?.visibility = View.VISIBLE
-        launchTimer = mediaProgress()
+        launchTimer = mediaProgress(totalDuration, this)
         mediaPlayer?.start()
-        popUpBinding?.playBtn?.visibility = View.GONE
-        popUpBinding?.stopBtn?.visibility = View.VISIBLE
-    }
 
+        popUpBinding?.apply {
+            tvPass.visibility = View.VISIBLE
+            playBtn.visibility = View.GONE
+            stopBtn.visibility = View.VISIBLE
+        }
+    }
 
     fun buttonStop() {
-        popUpBinding?.tvPass?.text = timeValue
-        popUpBinding?.playBtn?.visibility = View.VISIBLE
-        popUpBinding?.stopBtn?.visibility = View.GONE
         mediaPlayer?.stop()
-
         mediaPlayer = MediaPlayer.create(frgMainContext, myUri)
         launchTimer?.cancel()
-        popUpBinding?.vm = getVM() //Update the view with dataBinding
-    }
 
-    private fun mediaProgress(): CountDownTimer {
-
-        val timer = object : CountDownTimer(totalDuration, 1000) {
-
-            override fun onTick(millisUntilFinished: Long) {
-                remainingTime.value = getTimeResult(millisUntilFinished)
-                popUpBinding?.vm = getVM() //Update the view with dataBinding
-            }
-
-            override fun onFinish() =buttonStop()
+        popUpBinding?.apply {
+            tvPass.text = timeValue
+            playBtn.visibility = View.VISIBLE
+            stopBtn.visibility = View.GONE
+            vm = getVM() //Update the view with dataBinding
         }
-        timer.start()
-        return timer
     }
-
-    fun getTimeResult(millisUntilFinished: Long)  = "${(millisUntilFinished / 1000 / 60).toString().padStart(2, '0')}:" +
-    "${(millisUntilFinished / 1000 % 60).toString().padStart(2, '0')} "
 
     /**
      * Map
@@ -346,7 +295,6 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
 
         googleMap.let { map = it }
-
         googleMap.uiSettings.isZoomControlsEnabled = true //Zoom in/out
 
         val poisSize = retrieveDistrict?.pois?.size ?: 0
@@ -374,14 +322,12 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
                 googleMap.setOnMarkerClickListener {
                     it.position.latitude
-                    val mPoi: Pois? =
-                        retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
+                    val mPoi: Pois? = retrieveDistrict?.pois?.find { p -> p.latitude?.toDouble() == it.position.latitude && p.longitude?.toDouble() == it.position.longitude }
                     isIntoPopUp = false
                     popUpLocation = 1
-                    replaceFragment(
-                        mPoi?.let { it1 -> DetailFragment(it1, this) },
-                        (frgMapsContext?.get() as AppCompatActivity).supportFragmentManager
-                    )
+                    //TODO : Cities Navigator
+                    goToDetail(mPoi)
+
                     true
                 }
                 map?.let { setMapStyle(it) }
@@ -389,7 +335,7 @@ class PoisViewModel : ViewModel(), OnMapReadyCallback {
 
             true -> {
                 selectedPoi.let {
-                    frgMainActivity?.get()?.let {
+                    frgMainContext.let {
                         map?.addMarker(
                             MarkerOptions().position(
                                 LatLng(
